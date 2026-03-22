@@ -75,7 +75,6 @@ export default function LoginPage() {
               HEBITIC
             </h1>
             <p className="text-5xl md:text-6xl font-black text-orange-400 drop-shadow-2xl">
-              FORGE
             </p>
           </div>
 
