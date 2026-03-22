@@ -81,7 +81,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-center gap-4 my-8">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-orange-500" />
             <p className="text-orange-400 font-bold tracking-widest text-sm">
-              ARISE YOUR NEW VERSION
+              Time that work's back
             </p>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-orange-500" />
           </div>
