@@ -185,24 +185,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {/* Premium Option */}
-                <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded p-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isPremium}
-                      onChange={(e) => setIsPremium(e.target.checked)}
-                      className="w-5 h-5 accent-yellow-500"
-                    />
-                    <div className="flex-1">
-                      <span className="text-yellow-400 font-semibold">Premium Member</span>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Unlock exclusive cosmetics and avatar frames
-                      </p>
-                    </div>
-                    <span className="text-yellow-500 text-lg">⭐</span>
-                  </label>
-                </div>
+
               </div>
             )}
 
