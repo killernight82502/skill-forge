@@ -140,7 +140,7 @@ export default function LoginPage() {
             {/* Password Input */}
             <div>
               <label className="block text-orange-400 text-sm font-semibold mb-2">
-                Power Level
+                PASSWORD
               </label>
               <input
                 type="password"
