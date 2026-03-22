@@ -49,7 +49,7 @@ export const PREMIUM_PRODUCTS: PremiumProduct[] = [
     name: "Sovereign Premium",
     description: "Ultimate experience",
     priceInCents: 1999, // $19.99/month
-    priceDisplay: "$19.99",
+    priceDisplay: "359RS",
     tier: "sovereign",
     features: [
       "All Elite features",
