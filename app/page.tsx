@@ -55,8 +55,8 @@ export default function Home() {
         {/* Header */}
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2">
-              {process.env.NEXT_PUBLIC_SITE_NAME || 'Solo Leveling Manager'}
+            <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 italic">
+              TIME BOT 
             </h1>
             <p className="text-gray-400">
               Welcome, <span className="text-orange-400 font-semibold">{user.username}</span>. Grow stronger by completing tasks.
