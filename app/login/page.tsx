@@ -71,8 +71,8 @@ export default function LoginPage() {
         {/* Logo Section */}
         <div className="text-center mb-12">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-7xl font-black text-orange-500 drop-shadow-2xl mb-2">
-              HEBITIC
+            <h1 className="text-6xl md:text-7xl font-black text-orange-500 drop-shadow-2xl mb-2 italic">
+              TIME BOT
             </h1>
             <p className="text-5xl md:text-6xl font-black text-orange-400 drop-shadow-2xl">
             </p>
