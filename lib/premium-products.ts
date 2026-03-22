@@ -15,7 +15,7 @@ export const PREMIUM_PRODUCTS: PremiumProduct[] = [
     name: "Starter Premium",
     description: "Perfect for beginners",
     priceInCents: 499, // $4.99/month
-    priceDisplay: "$4.99",
+    priceDisplay: "59RS",
     tier: "starter",
     features: [
       "3 Exclusive avatar skins",
@@ -30,7 +30,7 @@ export const PREMIUM_PRODUCTS: PremiumProduct[] = [
     name: "Elite Premium",
     description: "Most popular choice",
     priceInCents: 999, // $9.99/month
-    priceDisplay: "$9.99",
+    priceDisplay: "159RS",
     tier: "elite",
     popular: true,
     features: [
