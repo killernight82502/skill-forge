@@ -71,18 +71,17 @@ export default function LoginPage() {
         {/* Logo Section */}
         <div className="text-center mb-12">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-7xl font-black text-orange-500 drop-shadow-2xl mb-2">
-              SKILL
+            <h1 className="text-6xl md:text-7xl font-black text-orange-500 drop-shadow-2xl mb-2 italic">
+              TIME BOT
             </h1>
             <p className="text-5xl md:text-6xl font-black text-orange-400 drop-shadow-2xl">
-              FORGE
             </p>
           </div>
 
           <div className="flex items-center justify-center gap-4 my-8">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-orange-500" />
             <p className="text-orange-400 font-bold tracking-widest text-sm">
-              ARISE YOUR NEW VERSION
+              Time that work's back
             </p>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-orange-500" />
           </div>
@@ -141,7 +140,7 @@ export default function LoginPage() {
             {/* Password Input */}
             <div>
               <label className="block text-orange-400 text-sm font-semibold mb-2">
-                Power Level
+                PASSWORD
               </label>
               <input
                 type="password"
@@ -186,24 +185,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {/* Premium Option */}
-                <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded p-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isPremium}
-                      onChange={(e) => setIsPremium(e.target.checked)}
-                      className="w-5 h-5 accent-yellow-500"
-                    />
-                    <div className="flex-1">
-                      <span className="text-yellow-400 font-semibold">Premium Member</span>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Unlock exclusive cosmetics and avatar frames
-                      </p>
-                    </div>
-                    <span className="text-yellow-500 text-lg">⭐</span>
-                  </label>
-                </div>
+
               </div>
             )}
 
