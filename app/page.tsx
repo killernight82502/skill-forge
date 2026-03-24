@@ -9,7 +9,6 @@ import { StatsPanel } from "@/components/stats-panel";
 import { ProgressSpiderChart } from "@/components/progress-spider-chart";
 import { CosmeticsShop } from "@/components/cosmetics-shop";
 import { PremiumUpgradeBanner } from "@/components/premium-upgrade-banner";
-import { AIChatWidget } from "@/components/ai-chat-widget";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -101,6 +100,7 @@ export default function Home() {
               description: data.description,
               durationMinutes: data.durationMinutes,
               difficulty: data.difficulty,
+              deadline: data.deadline,
             });
           }}
         />
@@ -178,14 +178,6 @@ export default function Home() {
           <p>Your stats are saved automatically. Keep pushing forward, hunter.</p>
         </div>
       </div>
-
-      {/* AI Chat Widget */}
-      <AIChatWidget
-        userLevel={level}
-        userXP={gameState.stats.totalXp}
-        userStreak={gameState.stats.currentStreak}
-        currentTasks={activeTasks.length}
-      />
     </main>
   );
 }

@@ -12,6 +12,7 @@ interface TaskFormProps {
     description: string;
     durationMinutes: number;
     difficulty: DifficultyRank;
+    deadline?: number;
   }) => void;
 }
 
@@ -21,6 +22,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
   const [duration, setDuration] = useState("");
   const [difficulty, setDifficulty] = useState<DifficultyRank>("D");
   const [isOpen, setIsOpen] = useState(false);
+  const [deadlineHours, setDeadlineHours] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,21 +34,25 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
       return;
     }
 
+    const deadline = deadlineHours ? Date.now() + parseInt(deadlineHours) * 60 * 60 * 1000 : undefined;
+
     onSubmit({
       title: title.trim(),
       description: description.trim(),
       durationMinutes: parseInt(duration),
       difficulty,
+      deadline,
     });
 
     toast.success("New Quest Added", {
-      description: `"${title}" has been added to your active quests.`,
+      description: `"${title}" has been added to your active quests.${deadline ? " Deadline set!" : ""}`,
     });
 
     setTitle("");
     setDescription("");
     setDuration("");
     setDifficulty("D");
+    setDeadlineHours("");
     setIsOpen(false);
   };
 
@@ -91,7 +97,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Duration (minutes) *
@@ -122,6 +128,21 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Deadline (hours)
+            </label>
+            <Input
+              type="number"
+              placeholder="24"
+              value={deadlineHours}
+              onChange={(e) => setDeadlineHours(e.target.value)}
+              min="1"
+              max="168"
+              className="bg-gray-900 border-gray-700 text-white"
+            />
           </div>
         </div>
 

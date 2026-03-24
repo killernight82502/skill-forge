@@ -22,6 +22,8 @@ export interface Task {
   completedAt?: number;
   xpReward: number;
   createdAt: number;
+  deadline?: number;
+  isOverdue?: boolean;
 }
 
 export interface PlayerStats {
@@ -36,7 +38,7 @@ export interface PlayerStats {
 export interface GameState {
   tasks: Task[];
   stats: PlayerStats;
-  addTask: (task: Omit<Task, "id" | "completed" | "xpReward" | "createdAt">) => void;
+  addTask: (task: Omit<Task, "id" | "completed" | "xpReward" | "createdAt" | "isOverdue">) => void;
   completeTask: (taskId: string) => void;
   deleteTask: (taskId: string) => void;
   getTotalXp: () => number;
@@ -44,6 +46,7 @@ export interface GameState {
   getActiveTasks: () => Task[];
   getCompletedTasks: () => Task[];
   getNewAchievements: () => typeof ACHIEVEMENTS[keyof typeof ACHIEVEMENTS][];
+  checkOverdueTasks: () => void;
 }
 
 const STORAGE_KEY = "solo_leveling_game";
@@ -124,8 +127,57 @@ export const useGameState = (): GameState => {
     });
   }, [tasks]);
 
+  // Check for overdue tasks and apply XP penalties
+  useEffect(() => {
+    if (tasks.length === 0) return;
+
+    const now = Date.now();
+    let xpPenaltyTotal = 0;
+    let overdueCount = 0;
+
+    tasks.forEach((task) => {
+      if (!task.completed && task.deadline && now > task.deadline) {
+        if (!task.isOverdue) {
+          const xpPenalty = Math.floor(task.xpReward * 0.5); // 50% of task reward
+          xpPenaltyTotal += xpPenalty;
+          overdueCount++;
+        }
+      }
+    });
+
+    if (overdueCount > 0) {
+      // Mark tasks as overdue
+      setTasks((prev) =>
+        prev.map((task) => {
+          if (!task.completed && task.deadline && now > task.deadline) {
+            return { ...task, isOverdue: true };
+          }
+          return task;
+        })
+      );
+
+      // Apply XP penalty
+      setStats((prev) => {
+        const newTotalXp = Math.max(0, prev.totalXp - xpPenaltyTotal);
+        const { level } = getLevelFromXp(newTotalXp);
+
+        // Show warning toast
+        toast.error("Task Deadline Missed!", {
+          description: `You lost ${xpPenaltyTotal} XP for ${overdueCount} overdue task(s). Complete them to regain progress!`,
+          icon: "⚠️",
+        });
+
+        return {
+          ...prev,
+          totalXp: newTotalXp,
+          level,
+        };
+      });
+    }
+  }, [tasks]);
+
   const addTask = useCallback(
-    (task: Omit<Task, "id" | "completed" | "xpReward" | "createdAt">) => {
+    (task: Omit<Task, "id" | "completed" | "xpReward" | "createdAt" | "isOverdue">) => {
       const xpReward = calculateTaskXp(task.durationMinutes, task.difficulty);
       const newTask: Task = {
         ...task,
@@ -133,6 +185,7 @@ export const useGameState = (): GameState => {
         completed: false,
         xpReward,
         createdAt: Date.now(),
+        isOverdue: false,
       };
 
       setTasks((prev) => [newTask, ...prev]);
@@ -235,6 +288,11 @@ export const useGameState = (): GameState => {
       .filter(Boolean) as typeof ACHIEVEMENTS[keyof typeof ACHIEVEMENTS][];
   }, [stats.unlockedAchievements]);
 
+  const checkOverdueTasks = useCallback(() => {
+    // This is called by the effect automatically, but can also be called manually
+    // The effect above handles the checking
+  }, []);
+
   return {
     tasks,
     stats,
@@ -246,5 +304,6 @@ export const useGameState = (): GameState => {
     getActiveTasks,
     getCompletedTasks,
     getNewAchievements,
+    checkOverdueTasks,
   };
 };
