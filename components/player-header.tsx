@@ -1,7 +1,7 @@
 "use client";
 
 import { getLevelFromXp } from "@/lib/game-constants";
-import { AnimeAvatar } from "./anime-avatar";
+import { Avatar3D } from "./avatar-3d";
 import { useAuth } from "@/hooks/use-auth";
 import { COSMETICS } from "@/lib/premium-cosmetics";
 import Link from "next/link";
@@ -28,7 +28,7 @@ export function PlayerHeader({
            borderColor: cosmetic.borderColor,
            boxShadow: `0 0 20px ${cosmetic.glowColor}`,
          }}>
-      <div className="flex gap-8 items-start mb-6">
+      <div className="flex gap-6 items-stretch mb-6">
         {/* Premium Badge / Upgrade Button */}
         {user?.isPremium ? (
           <div className="absolute top-4 right-4 flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/50 px-3 py-1 rounded-full">
@@ -45,12 +45,17 @@ export function PlayerHeader({
         )}
 
         {/* Avatar Section */}
-        <div className="flex-shrink-0">
-          <AnimeAvatar level={level} />
+        <div className="flex-shrink-0 w-80">
+          <Avatar3D 
+            level={level} 
+            xp={currentXp}
+            maxXpForLevel={nextLevelXp}
+            selectedCosmetic={cosmetic}
+          />
         </div>
 
         {/* Stats Section */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col justify-center">
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-sm text-gray-400 mb-1">Current Level</div>

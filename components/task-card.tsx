@@ -71,6 +71,22 @@ export function TaskCard({ task, onComplete, onDelete }: TaskCardProps) {
         </div>
       </div>
 
+      {task.deadline && (
+        <div className={`text-xs mb-3 ${
+          task.isOverdue 
+            ? "text-red-400 font-semibold" 
+            : new Date().getTime() > task.deadline - 3600000
+              ? "text-orange-400"
+              : "text-gray-400"
+        }`}>
+          {task.isOverdue ? (
+            <span>⚠️ OVERDUE - Complete immediately to restore XP!</span>
+          ) : (
+            <span>📅 Due: {new Date(task.deadline).toLocaleString()}</span>
+          )}
+        </div>
+      )}
+
       {task.completedAt && (
         <div className="text-xs text-green-400 mb-3">
           ✓ Completed {new Date(task.completedAt).toLocaleDateString()}

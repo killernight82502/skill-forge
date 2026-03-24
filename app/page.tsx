@@ -100,6 +100,7 @@ export default function Home() {
               description: data.description,
               durationMinutes: data.durationMinutes,
               difficulty: data.difficulty,
+              deadline: data.deadline,
             });
           }}
         />
