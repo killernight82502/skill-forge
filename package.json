@@ -11,6 +11,9 @@
   "dependencies": {
     "ai": "^6.0.0",
     "@ai-sdk/react": "^3.0.0",
+    "@react-three/fiber": "^8.16.8",
+    "@react-three/drei": "^9.111.4",
+    "three": "^r128",
     "@hookform/resolvers": "^3.9.1",
     "@vercel/analytics": "1.6.1",
     "@radix-ui/react-accordion": "1.2.12",
