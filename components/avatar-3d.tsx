@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -33,70 +33,84 @@ function CharacterMesh({ level, selectedCosmetic }: Omit<Avatar3DProps, 'maxXpFo
     }
   });
 
-  const tierScale = 0.5 + (Math.min(level, 7) / 7) * 0.8;
-  const baseColor = new THREE.Color(selectedCosmetic.color);
-  const glowColor = selectedCosmetic.color;
+  const tierScale = Math.min(0.5 + level * 0.1, 1.3);
+  const glowColor = selectedCosmetic.glowColor || '#ff6b35';
 
   return (
-    <group ref={groupRef}>
-      {/* Body - grows with level */}
+    <group
+      ref={groupRef}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
+      {/* Body */}
       <mesh position={[0, 0, 0]} scale={tierScale}>
-        <capsuleGeometry args={[0.4, 1.5, 4, 8]} />
+        <cylinderGeometry args={[0.4, 0.3, 1.2, 16]} />
         <meshStandardMaterial
-          color={baseColor}
-          emissive={glowColor}
-          emissiveIntensity={0.3 + level * 0.05}
-          metalness={0.4}
+          color={selectedCosmetic.color}
+          emissive={selectedCosmetic.color}
+          emissiveIntensity={0.5 + level * 0.08}
+          metalness={0.3}
           roughness={0.6}
         />
       </mesh>
 
       {/* Head */}
-      <mesh position={[0, 1.2 * tierScale, 0]} scale={tierScale}>
-        <sphereGeometry args={[0.5, 32, 32]} />
+      <mesh position={[0, 0.85 * tierScale, 0]} scale={tierScale}>
+        <sphereGeometry args={[0.35, 16, 16]} />
         <meshStandardMaterial
-          color={baseColor}
-          emissive={glowColor}
-          emissiveIntensity={0.4 + level * 0.05}
-          metalness={0.3}
+          color={selectedCosmetic.color}
+          emissive={selectedCosmetic.color}
+          emissiveIntensity={0.6 + level * 0.1}
+          metalness={0.2}
           roughness={0.5}
         />
       </mesh>
 
-      {/* Armor Plates - appear with progression */}
+      {/* Armor plates - appear at level 2 */}
       {level >= 2 && (
-        <mesh position={[0, 0.3 * tierScale, 0.6 * tierScale]} scale={tierScale * 1.1}>
-          <boxGeometry args={[0.8, 0.6, 0.2]} />
-          <meshStandardMaterial
-            color={selectedCosmetic.borderColor}
-            emissive={selectedCosmetic.borderColor}
-            emissiveIntensity={0.5}
-            metalness={0.7}
-            roughness={0.3}
-          />
-        </mesh>
+        <group position={[0, 0, 0]}>
+          {[0, 90, 180, 270].map((angle) => (
+            <mesh
+              key={angle}
+              position={[
+                Math.cos((angle * Math.PI) / 180) * 0.5,
+                0.3 * tierScale,
+                Math.sin((angle * Math.PI) / 180) * 0.5,
+              ]}
+              rotation={[0, (angle * Math.PI) / 180, 0.3]}
+              scale={tierScale}
+            >
+              <boxGeometry args={[0.3, 0.6, 0.1]} />
+              <meshStandardMaterial
+                color="#8b5a3c"
+                emissive="#ff6b35"
+                emissiveIntensity={0.4}
+                metalness={0.8}
+                roughness={0.3}
+              />
+            </mesh>
+          ))}
+        </group>
       )}
 
       {/* Weapon - appears at level 4 */}
       {level >= 4 && (
-        <group position={[0.8 * tierScale, 0.2 * tierScale, 0]}>
-          <mesh scale={tierScale}>
-            <boxGeometry args={[0.3, 1.2, 0.1]} />
-            <meshStandardMaterial
-              color="#ff6b35"
-              emissive="#ff6b35"
-              emissiveIntensity={0.6 + level * 0.05}
-              metalness={0.8}
-              roughness={0.2}
-            />
-          </mesh>
-        </group>
+        <mesh position={[0.6 * tierScale, -0.2 * tierScale, 0]} rotation={[0, 0, 0.5]} scale={tierScale}>
+          <boxGeometry args={[0.25, 1.2, 0.1]} />
+          <meshStandardMaterial
+            color={selectedCosmetic.color}
+            emissive={selectedCosmetic.color}
+            emissiveIntensity={0.7 + level * 0.1}
+            metalness={0.9}
+            roughness={0.2}
+          />
+        </mesh>
       )}
 
-      {/* Energy Aura - increases with level */}
+      {/* Aura ring - appears at level 3 */}
       {level >= 3 && (
-        <mesh position={[0, 0, 0]} scale={1.5 + level * 0.15}>
-          <torusGeometry args={[1, 0.1, 16, 100]} />
+        <mesh position={[0, 0, 0]} scale={[1 + level * 0.15, 0.1, 1 + level * 0.15]}>
+          <torusGeometry args={[0.8, 0.15, 16, 100]} />
           <meshStandardMaterial
             color={selectedCosmetic.color}
             emissive={selectedCosmetic.color}
@@ -140,39 +154,46 @@ export function Avatar3D({ level, xp, selectedCosmetic, maxXpForLevel }: Avatar3
 
   return (
     <div className="w-full h-96 relative bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 rounded-2xl overflow-hidden border border-gray-800">
-      <Canvas
-        camera={{ position: [0, 0, 3], fov: 50 }}
-        gl={{
-          antialias: true,
-          alpha: true,
-          preserveDrawingBuffer: false,
-          failIfMajorPerformanceCaveat: false,
-        }}
-        style={{ background: 'transparent' }}
+      <Suspense 
+        fallback={
+          <div className="w-full h-96 flex items-center justify-center text-gray-400">
+            Loading 3D avatar...
+          </div>
+        }
       >
-        <PerspectiveCamera makeDefault position={[0, 0, 3]} fov={50} />
+        <Canvas
+          camera={{ position: [0, 0, 3], fov: 50 }}
+          gl={{
+            antialias: true,
+            alpha: true,
+            preserveDrawingBuffer: false,
+          }}
+          style={{ background: 'transparent' }}
+        >
+          <PerspectiveCamera makeDefault position={[0, 0, 3]} fov={50} />
 
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={1} />
-        <directionalLight position={[-5, 3, -5]} intensity={0.5} />
+          {/* Lighting */}
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[5, 5, 5]} intensity={1} />
+          <directionalLight position={[-5, 3, -5]} intensity={0.5} />
 
-        {/* Character */}
-        <CharacterMesh level={level} selectedCosmetic={selectedCosmetic} />
+          {/* Character */}
+          <CharacterMesh level={level} selectedCosmetic={selectedCosmetic} />
 
-        {/* Environment */}
-        <Environment preset="night" background={false} />
+          {/* Environment */}
+          <Environment preset="night" background={false} />
 
-        {/* Controls */}
-        <OrbitControls
-          enableZoom={true}
-          enablePan={true}
-          autoRotate={true}
-          autoRotateSpeed={2}
-          maxDistance={8}
-          minDistance={2}
-        />
-      </Canvas>
+          {/* Controls */}
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            autoRotate={true}
+            autoRotateSpeed={2}
+            maxDistance={8}
+            minDistance={2}
+          />
+        </Canvas>
+      </Suspense>
 
       {/* XP Progress Bar Overlay */}
       <div className="absolute bottom-4 left-4 right-4">
